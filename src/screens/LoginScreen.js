@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Dimensions, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
+
+useEffect(() => {
+    const checkLoginStatus = async () => {
+      const loggedIn = await AsyncStorage.getItem('isLoggedIn');
+      if (loggedIn === 'true') {
+        navigation.replace('Main');
+      }
+    };
+    checkLoginStatus();
+  }, []);
 
 export default function LoginScreen({ navigation }) {
   const [login, setLogin] = useState('');
@@ -12,7 +22,7 @@ export default function LoginScreen({ navigation }) {
  const handleLogin = async () => {
   if (login === 'Admin' && senha === '1234') {
     setErrorVisible(false);
-    await AsyncStorage.setItem('isLoggedIn', 'true');
+    await AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
     navigation.replace('Main');
   } else {
     setErrorVisible(true);
